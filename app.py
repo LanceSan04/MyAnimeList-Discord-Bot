@@ -183,7 +183,7 @@ def format_anime_embed(anime_data):
             aired = f"{start_date} to {end_date}"
     else:
         aired = "Unknown"
-        
+
     # Format genres
     genres = anime_data.get("genres", [])
     genres_str = ", ".join(g["name"] for g in genres) if genres else "N/A"
@@ -223,7 +223,7 @@ def format_anime_embed(anime_data):
         "image_url": anime_data.get("main_picture", {}).get("large"),
         "rating": anime_data.get("mean", "N/A"),
         "episodes": anime_data.get("num_episodes", "?"),
-        "status": anime_data.get("status", "Unknown").replace('_', ' '),
+        "status": anime_data.get("status", "Unknown").replace("_", " "),
         "aired": aired,
         "url": f"https://myanimelist.net/anime/{anime_id}" if anime_id else "N/A",
         "id": anime_id,
@@ -432,9 +432,11 @@ class SearchView(discord.ui.View):
         embed.add_field(name="Episodes", value=embed_data["episodes"], inline=True)
         embed.add_field(name="Status", value=embed_data["status"], inline=True)
         embed.add_field(name="Aired", value=embed_data["aired"], inline=True)
-        embed.add_field(name="Genres", value= embed_data["genres"], inline=False)
-        embed.add_field(name="Related Anime:", value=embed_data["related_anime"], inline=False)
-        embed.add_field(name="Studios", value= embed_data["studios"], inline=False)
+        embed.add_field(name="Genres", value=embed_data["genres"], inline=False)
+        embed.add_field(
+            name="Related Anime:", value=embed_data["related_anime"], inline=False
+        )
+        embed.add_field(name="Studios", value=embed_data["studios"], inline=False)
         embed.add_field(name="ID", value=embed_data["id"], inline=False)
         embed.add_field(
             name="MyAnimeList",
@@ -530,7 +532,7 @@ async def anime(ctx, anime_id=None, *args):
         anime_id = int(anime_id)
     except ValueError:
         await ctx.send(
-            f"Invalid anime ID \"{anime_id}\". ID must be a number. Use `!help anime` for more info."
+            f'Invalid anime ID "{anime_id}". ID must be a number. Use `!help anime` for more info.'
         )
         return
 
@@ -551,9 +553,11 @@ async def anime(ctx, anime_id=None, *args):
     embed.add_field(name="Episodes", value=embed_data["episodes"], inline=True)
     embed.add_field(name="Status", value=embed_data["status"], inline=True)
     embed.add_field(name="Aired", value=embed_data["aired"], inline=True)
-    embed.add_field(name="Genres", value= embed_data["genres"], inline=False)
-    embed.add_field(name="Related Anime:", value=embed_data["related_anime"], inline=False)
-    embed.add_field(name="Studios", value= embed_data["studios"], inline=False)    
+    embed.add_field(name="Genres", value=embed_data["genres"], inline=False)
+    embed.add_field(
+        name="Related Anime:", value=embed_data["related_anime"], inline=False
+    )
+    embed.add_field(name="Studios", value=embed_data["studios"], inline=False)
     embed.add_field(name="ID", value=embed_data["id"], inline=False)
     embed.add_field(
         name="MyAnimeList", value=f"[View on MAL]({embed_data['url']})", inline=False
@@ -575,7 +579,7 @@ async def seasonal(ctx, year=None, season=None, *args):
         year = int(year)
     except ValueError:
         await ctx.send(
-            f"Invalid year \"{year}\". Year must be a number. Use `!help seasonal` for more info."
+            f'Invalid year "{year}". Year must be a number. Use `!help seasonal` for more info.'
         )
         return
 
@@ -624,8 +628,10 @@ async def list(ctx, username=None, sorting_method="alphabetical", *, status=None
     """Retrieve and paginate a user's MyAnimeList anime list, optionally filtered by status."""
 
     if sorting_method not in ["alphabetical", "score"]:
-        await ctx.send(f"Cannot sort by \"{sorting_method}\". Use `!help list` for more info.")
-        return   
+        await ctx.send(
+            f'Cannot sort by "{sorting_method}". Use `!help list` for more info.'
+        )
+        return
 
     if not username:
         await ctx.send("Missing username. Use `!help list` for more info.")
@@ -670,7 +676,9 @@ async def list(ctx, username=None, sorting_method="alphabetical", *, status=None
         return
 
     if sorting_method == "score":
-        all_anime = sorted(all_anime, key=lambda anime: anime['list_status']['score'], reverse = True)
+        all_anime = sorted(
+            all_anime, key=lambda anime: anime["list_status"]["score"], reverse=True
+        )
 
     profile_url = f"https://myanimelist.net/profile/{username}"
     title = f"{username}'s Anime List ({status or 'All'})"
@@ -683,7 +691,13 @@ async def list(ctx, username=None, sorting_method="alphabetical", *, status=None
 
 
 @bot.command()
-async def guessgame(ctx, difficulty: str = "medium", limit: str = "500", ranking_type: str = "bypopularity", *args):
+async def guessgame(
+    ctx,
+    difficulty: str = "medium",
+    limit: str = "500",
+    ranking_type: str = "bypopularity",
+    *args,
+):
     """Start the guess the rating game with optional pool size and ranking type"""
 
     user_id = ctx.author.id
@@ -694,7 +708,7 @@ async def guessgame(ctx, difficulty: str = "medium", limit: str = "500", ranking
         await ctx.send(
             f"Invalid difficulty \"{difficulty}\". Valid options: {', '.join(difficulties)}. Use `!help guessgame` for more info."
         )
-        return        
+        return
 
     try:
         limit_value = int(limit)
@@ -705,7 +719,7 @@ async def guessgame(ctx, difficulty: str = "medium", limit: str = "500", ranking
             return
     except ValueError:
         await ctx.send(
-            f"Invalid limit \"{limit}\". Limit must be a number between 1-2500. Use `!help guessgame` for more info."
+            f'Invalid limit "{limit}". Limit must be a number between 1-2500. Use `!help guessgame` for more info.'
         )
         return
 
@@ -765,12 +779,12 @@ async def guessgame(ctx, difficulty: str = "medium", limit: str = "500", ranking
     )
     if current_anime.get("main_picture"):
         embed.set_image(url=current_anime["main_picture"]["medium"])
-    
+
     margin = 0.25
     if difficulty == "easy":
         margin = 0.5
     if difficulty == "hard":
-        margin = 0.1        
+        margin = 0.1
     embed.add_field(
         name="Instructions",
         value=f"Guess the rating (0-10) within ±{margin} points!\nUse: !guess <number>",
@@ -797,7 +811,7 @@ async def guess(ctx, guess_value=None, *args):
         guess_value = float(guess_value)
     except ValueError:
         await ctx.send(
-            f"Invalid rating \"{guess_value}\". Rating must be a number between 0-10. Use `!help guess` for more info."
+            f'Invalid rating "{guess_value}". Rating must be a number between 0-10. Use `!help guess` for more info.'
         )
         return
 
@@ -810,13 +824,13 @@ async def guess(ctx, guess_value=None, *args):
     session = user_guess_sessions[user_id]
     current_anime = session["current_anime"]
     actual_rating = current_anime.get("mean", 0)
-    
+
     if session["difficulty"] == "easy":
         margin = 0.5
     if session["difficulty"] == "medium":
-        margin = 0.25  
+        margin = 0.25
     if session["difficulty"] == "hard":
-        margin = 0.1    
+        margin = 0.1
 
     anime_pool = session["anime_pool"]
 
@@ -828,7 +842,9 @@ async def guess(ctx, guess_value=None, *args):
         if anime_pool:  # Still have more anime
             embed.add_field(name="Your Guess", value=guess_value, inline=True)
             embed.add_field(name="Actual Rating", value=actual_rating, inline=True)
-            embed.add_field(name="Difficulty: ", value=session["difficulty"], inline=True)
+            embed.add_field(
+                name="Difficulty: ", value=session["difficulty"], inline=True
+            )
             embed.add_field(name="Current Score", value=session["score"], inline=False)
             next_anime = anime_pool.pop(random.randint(0, len(anime_pool) - 1)).get(
                 "node", {}
@@ -844,7 +860,9 @@ async def guess(ctx, guess_value=None, *args):
         else:  # Pool exhausted, last correct guess
             embed.add_field(name="Final Guess", value=guess_value, inline=True)
             embed.add_field(name="Actual Rating", value=actual_rating, inline=True)
-            embed.add_field(name="Difficulty: ", value=session["difficulty"], inline=True)
+            embed.add_field(
+                name="Difficulty: ", value=session["difficulty"], inline=True
+            )
             embed.add_field(name="Final Score", value=session["score"], inline=False)
             embed.add_field(
                 name="Game Over",
@@ -885,7 +903,7 @@ async def higherlower(
             limit_value = int(limit)
         except ValueError:
             await ctx.send(
-                f"Invalid limit \"{limit}\". Limit must be a number between 2-2500. Use `!help higherlower` for more info."
+                f'Invalid limit "{limit}". Limit must be a number between 2-2500. Use `!help higherlower` for more info.'
             )
             return
 
@@ -901,7 +919,7 @@ async def higherlower(
 
     if limit_value < 2 or limit_value > 2500:
         await ctx.send(
-            f"Invalid limit \"{limit}\". Limit must be a number between 2-2500. Use `!help higherlower` for more info."
+            f'Invalid limit "{limit}". Limit must be a number between 2-2500. Use `!help higherlower` for more info.'
         )
         return
 
@@ -1028,9 +1046,7 @@ async def _process_higher_lower_guess(ctx, guess, interaction, message):
             msg = await ctx.send(embed=embed, view=view)
             view.message = msg
         else:  # Pool exhausted, last correct guess
-            embed.add_field(
-                name="Final Streak", value=session["score"], inline=False
-            )
+            embed.add_field(name="Final Streak", value=session["score"], inline=False)
             embed.add_field(
                 name="Final Anime",
                 value=f"{get_anime_title_with_alternative(session['current_anime'])}\nRating: {next_rating}",
@@ -1057,9 +1073,7 @@ async def _process_higher_lower_guess(ctx, guess, interaction, message):
             value=f"{get_anime_title_with_alternative(next_anime)}\nRating: {next_rating}",
             inline=True,
         )
-        embed.add_field(
-            name="Final Streak", value=session["score"], inline=False
-        )
+        embed.add_field(name="Final Streak", value=session["score"], inline=False)
 
         if session["next_anime"].get("main_picture"):
             embed.set_image(url=session["next_anime"]["main_picture"]["medium"])
@@ -1132,7 +1146,7 @@ async def help(ctx, command: str = None, *args):
             "description": "Start the guess-the-rating game. Guess the rating within margin. Optional limit for anime pool size (default: 500, min is 1, max is 2500) and ranking type.",
             "example": "!guessgame or !guessgame 100 airing",
             "ranking types": "popularity (default), airing, movie, favorite",
-            "difficulties": "easy (margin: 0.5), medium (default margin: 0.25), hard (margin: 0.1)"
+            "difficulties": "easy (margin: 0.5), medium (default margin: 0.25), hard (margin: 0.1)",
         },
         "guess": {
             "usage": "!guess <number>",
